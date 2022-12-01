@@ -1,17 +1,18 @@
-import { appendFile, stat } from 'node:fs/promises';
-import { join } from 'node:path';
+import { writeFile } from 'node:fs/promises';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const filePath = join("./files/", "fresh.txt");
+const folderPath = dirname(fileURLToPath(import.meta.url));
+const fileName = "fresh.txt";
+const filePath = join(folderPath, "/files/", fileName);
 const data = `I am fresh and young`;
 
 const create = async () => {
     try {
-        const itemStats = await stat(filePath);
+        await writeFile(filePath, data, { flag: "wx" });
     } catch {
-        await appendFile(filePath, data);
-        return;
+        throw new Error("FS operation failed");
     }
-    throw Error("FS operation failed");
 };
 
 await create();
